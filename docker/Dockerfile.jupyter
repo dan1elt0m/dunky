@@ -1,0 +1,13 @@
+# x86-64 is required for duckdb uc_catalog extension
+FROM quay.io/jupyter/minimal-notebook:x86_64-python-3.11
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+COPY example.ipynb ${HOME}/example.ipynb
+
+WORKDIR ${HOME}
+
+EXPOSE 8888
+
+CMD ["jupyter", "lab", "--allow-root"]

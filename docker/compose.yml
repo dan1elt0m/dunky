@@ -1,0 +1,38 @@
+services:
+  uc:
+    image: godatadriven/unity-catalog
+    ports:
+      - 8080:8080
+    volumes:
+      - shared-data:/app/unitycatalog
+  jupyter:
+    user: root
+    build:
+      dockerfile: Dockerfile.jupyter
+      context: .
+    environment:
+      JUPYTER_TOKEN: junity
+      HOME: /home/junity
+      NB_USER: junity
+      NB_UID: 1008
+      NB_GID: 1011
+      CHOWN_HOME: 'yes'
+      CHOWN_HOME_OPTS: -R
+    ports:
+      - 8888:8888
+    depends_on:
+      - uc
+    volumes:
+      - shared-data:/app/unitycatalog
+  nginx: # (reverse proxy) Enables service on localhost running outside docker compose network to access UC Catalog API
+    container_name: nginx
+    build:
+      dockerfile: Dockerfile.nginx
+      context: .
+    ports:
+      - "8081:80"
+    depends_on:
+      - uc
+
+volumes:
+  shared-data:

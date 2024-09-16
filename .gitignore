@@ -4,3 +4,6 @@
 __pycache__/
 dist/
 .envrc
+junit/
+.coverage
+data_kernelspec/

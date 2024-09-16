@@ -1,0 +1,3 @@
+junity==0.1.1
+duckdb==1.0.0
+dunky==0.1.0

@@ -3,6 +3,7 @@ name = "dunky"
 version = "0.1.0"
 description = "A Jupyter Kernel for DuckDB with Unity Catalog"
 readme = "README.md"
+
 requires-python = ">=3.11"
 dependencies = [
     "dbt-duckdb[unity]",
@@ -16,14 +17,14 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "coverage>=7.6.1",
-    "hatchling>=1.25.0",
     "pre-commit>=3.8.0",
+    "pytest-cov>=5.0.0",
     "pytest>=8.3.3",
     "ruff>=0.6.5",
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "ipykernel>=6.29.5"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.hooks.custom]
