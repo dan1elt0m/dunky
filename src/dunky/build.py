@@ -13,7 +13,7 @@ kernel_json = {
     "argv": [
         "python",
         "-m",
-        "dunky_kernel",
+        "dunky",
         "-f",
         "{connection_file}"
     ],
