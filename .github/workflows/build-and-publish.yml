@@ -18,5 +18,5 @@ jobs:
         with:
           python-version-file: "pyproject.toml"
       - name: Install dependencies
-        run: uv venv && uv pip install -r pyproject.toml && uv build       # build
+        run:  export PBR_VERSION=1.8.3 && uv venv && uv pip install -r pyproject.toml && uv build       # build
       - uses: pypa/gh-action-pypi-publish@release/v1    # publish

@@ -432,8 +432,8 @@ wheels = [
 
 [[package]]
 name = "dbt-duckdb"
-version = "0.0.1.dev867"
-source = { git = "https://github.com/godatadriven/dbt-duckdb.git#58c9b2c363934fc70c71e3e03aab1591c38fb278" }
+version = "1.2.3"
+source = { url = "https://github.com/godatadriven/dbt-duckdb/archive/refs/tags/v0.0.1.tar.gz" }
 dependencies = [
     { name = "dbt-adapters" },
     { name = "dbt-common" },
@@ -441,12 +441,29 @@ dependencies = [
     { name = "duckdb" },
     { name = "tenacity" },
 ]
+sdist = { url = "https://github.com/godatadriven/dbt-duckdb/archive/refs/tags/v0.0.1.tar.gz", hash = "sha256:a91a999fe9624475c980b7e29dbcb1d89049d7c403fa25d20a4e03060b122cca" }
 
 [package.optional-dependencies]
 unity = [
     { name = "deltalake" },
     { name = "pyarrow" },
     { name = "unitycatalog" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "boto3", marker = "extra == 'glue'" },
+    { name = "dbt-adapters", specifier = ">=1,<2" },
+    { name = "dbt-common", specifier = ">=1,<2" },
+    { name = "dbt-core", specifier = ">=1.8.0" },
+    { name = "deltalake", marker = "extra == 'delta'", specifier = "==0.18.2" },
+    { name = "deltalake", marker = "extra == 'unity'", specifier = "==0.18.2" },
+    { name = "duckdb", specifier = "==1.0.0" },
+    { name = "mypy-boto3-glue", marker = "extra == 'glue'" },
+    { name = "pyarrow", marker = "extra == 'delta'", specifier = "==17.0.0" },
+    { name = "pyarrow", marker = "extra == 'unity'", specifier = "==17.0.0" },
+    { name = "tenacity", specifier = ">=7.0.0" },
+    { name = "unitycatalog", marker = "extra == 'unity'", specifier = "==0.1.1" },
 ]
 
 [[package]]
@@ -600,7 +617,7 @@ wheels = [
 
 [[package]]
 name = "dunky"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "dbt-duckdb", extra = ["unity"] },
@@ -622,7 +639,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dbt-duckdb", extras = ["unity"], git = "https://github.com/godatadriven/dbt-duckdb.git" },
+    { name = "dbt-duckdb", extras = ["unity"], url = "https://github.com/godatadriven/dbt-duckdb/archive/refs/tags/v0.0.1.tar.gz" },
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "jupyter-client", specifier = ">=8.6.2" },
