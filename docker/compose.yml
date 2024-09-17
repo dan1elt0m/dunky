@@ -9,11 +9,10 @@ services:
     user: root
     build:
       dockerfile: Dockerfile.jupyter
-      context: .
     environment:
-      JUPYTER_TOKEN: junity
-      HOME: /home/junity
-      NB_USER: junity
+      JUPYTER_TOKEN: dunky
+      HOME: /home/dunky
+      NB_USER: dunky
       NB_UID: 1008
       NB_GID: 1011
       CHOWN_HOME: 'yes'
@@ -28,7 +27,6 @@ services:
     container_name: nginx
     build:
       dockerfile: Dockerfile.nginx
-      context: .
     ports:
       - "8081:80"
     depends_on:
