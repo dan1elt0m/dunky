@@ -1,6 +1,6 @@
 [project]
 name = "dunky"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Jupyter Kernel for DuckDB with Unity Catalog"
 readme = "README.md"
 
@@ -28,8 +28,15 @@ requires = ["hatchling", "ipykernel>=6.29.5"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.hooks.custom]
-path = "build.py"
+path = "src/dunky/build.py"
 
+[tool.hatch.build.targets.wheel.shared-data]
+"src/dunky/data_kernelspec/share" = "share"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src/dunky",
+]
 [tool.uv.sources]
 dbt-duckdb = { git = "https://github.com/godatadriven/dbt-duckdb.git" }
 

@@ -7,3 +7,4 @@ dist/
 junit/
 .coverage
 data_kernelspec/
+.DS_Store
