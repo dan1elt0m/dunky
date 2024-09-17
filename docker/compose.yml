@@ -17,6 +17,7 @@ services:
       NB_GID: 1011
       CHOWN_HOME: 'yes'
       CHOWN_HOME_OPTS: -R
+      UC_ENDPOINT: 'http://uc:8080'
     ports:
       - 8888:8888
     depends_on:
