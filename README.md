@@ -2,7 +2,7 @@
 
 A Jupyter Kernel for DuckDB with Unity Catalog.
 
-![Dunky Demo](docs/demo.gif)
+![Dunky Demo](./docs/demo.gif)
 
 ### Description
 
@@ -30,9 +30,9 @@ pip install dunky
 ### Configure Unity Catalog
 You can set the following environment variables to configure Unity Catalog:
 
-- UC_ENDPOINT: The endpoint of the Unity Catalog server.
-- UC_TOKEN: The token to authenticate with the Unity Catalog server. 
-- UC_AWS_REGION: The AWS region to use for the Unity Catalog server.
+- `UC_ENDPOINT`: The endpoint of the Unity Catalog server.
+- `UC_TOKEN`: The token to authenticate with the Unity Catalog server. 
+- `UC_AWS_REGION`: The AWS region to use for the Unity Catalog server.
 
 These settings default to localhost:8080/api/2.1/unity-catalog, not-used, and eu-west-1 respectively.
 
@@ -57,6 +57,10 @@ ATTACH DATABASE 'unity' AS unity (TYPE UC_CATALOG);
 After attaching, just start writing your queries and enjoy the power of DuckDB with Unity Catalog integration!
 
 
+ps. Dunky might also work with gcp and azure, but have not tested this. depends on whether unity and duckdb uc_catalog
+support it. I've seen some people confirming that unity catalog and duckdb can work with Azure and gcp. 
+
+
 ### Example docker
 In the `docker` folder, you can find an example of how to run JupyterLab with Dunky and Unity Catalog in Docker containers.
 To run the example, execute:
@@ -69,3 +73,7 @@ docker compose up --build -d
 ### Remarks
 - This kernel is still in development and may have some bugs.
 - This extension works well together with the junity extension.
+
+
+### Issues?
+If you encounter any issues, please open an issue on the [GitHub repository](https://github.com/dan1elt0m/dunky/issues).
