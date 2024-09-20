@@ -10,6 +10,7 @@ from dunky.dunky_kernel import (
     is_create_external_table_as_select_query,
 )
 
+
 @pytest.fixture
 @patch("dunky.dunky_kernel.duckdb.connect")
 def kernel(mock_connect):
