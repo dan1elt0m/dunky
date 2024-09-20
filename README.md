@@ -69,6 +69,9 @@ To run the example, execute:
 cd docker
 docker compose up --build -d
 ```
+token/password = dunky
+
+If not already selected, you can find Dunky kernel in the kernel list.
 
 ### Remarks
 - This kernel is still in development and may have some bugs.

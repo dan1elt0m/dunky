@@ -10,7 +10,6 @@ from dunky.dunky_kernel import (
     is_create_external_table_as_select_query,
 )
 
-
 @pytest.fixture
 @patch("dunky.dunky_kernel.duckdb.connect")
 def kernel(mock_connect):
@@ -71,7 +70,7 @@ def test_detach_query_executes_correctly(kernel):
 def test_create_external_table_as_select_query_executes_correctly(kernel):
     query = "CREATE EXTERNAL TABLE a.b.test_table LOCATION 'somewhere' OPTIONS (FORMAT=DELTA, MODE=OVERWRITE) AS SELECT * FROM source_table"
     kernel._conn.sql.return_value.arrow.return_value = MagicMock()
-    with patch("dunky.dunky_kernel.DunkyPlugin.store") as mock_store:
+    with patch("dunky.store.store") as mock_store:
         kernel._run_create_external_table_as_select_query(query, silent=False)
         kernel._conn.sql.assert_any_call("DETACH DATABASE a;")
         kernel._conn.sql.assert_any_call("ATTACH 'a' AS a (TYPE UC_CATALOG);")

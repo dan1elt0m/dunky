@@ -1,13 +1,29 @@
 import os
 import re
-
-from dbt.adapters.base import BaseRelation
-from dbt.adapters.duckdb.utils import TargetConfig, TargetLocation
-
-from dunky.plugin import get_path
+from dataclasses import dataclass
 
 
-class DunkyTargetConfig(TargetConfig):
+@dataclass
+class TableConfig:
+    catalog_name: str
+    schema_name: str
+    table_name: str
+
+def get_table_config(table_name: str) -> TableConfig:
+    """"""
+    parts = table_name.split(".")
+    if len(parts) != 3:
+        raise ValueError(
+            "Table name must be in the format 'database.schema.identifier'"
+        )
+    return TableConfig(catalog_name=parts[0], schema_name=parts[1], table_name=parts[2])
+
+@dataclass
+class DunkyTargetConfig:
+    table_config: TableConfig
+    location: str
+    storage_options: dict
+
     @classmethod
     def from_query(cls, query: str) -> "DunkyTargetConfig":
         # Extract table name and location from the query
@@ -28,18 +44,10 @@ class DunkyTargetConfig(TargetConfig):
                 key, value = option.split("=")
                 storage_options[key.strip()] = value.strip().strip("'\"")
 
-        path = get_path(table_name)
+        table_config = get_table_config(table_name)
 
-        cls.catalog_name = path.database
-
-        relation = BaseRelation(get_path(table_name))
-
-        # Create the necessary objects
-        location = TargetLocation(path=table_location, format="delta")
-        config = {
-            "mode": "overwrite",  # Default mode, can be adjusted as needed
-            "schema": path.schema,  # Default schema, can be adjusted as needed
-            "storage_options": storage_options,
-        }
-
-        return cls(relation=relation, location=location, config=config, column_list=[])
+        return cls(
+            table_config=table_config,
+            location=table_location,
+            storage_options=storage_options,
+        )

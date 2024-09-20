@@ -1,14 +1,10 @@
 import subprocess
-
-from ipykernel.kernelbase import Kernel
 import duckdb
+from ipykernel.kernelbase import Kernel
 import os
 import re
 from tabulate import tabulate
 
-from .plugin import DunkyPlugin
-from dunky.threading import run_with_timeout
-from dunky.config import DunkyTargetConfig
 
 
 def display_data(header: str, rows: list):
@@ -181,6 +177,12 @@ class DunkyKernel(Kernel):
             self.send_response(self.iopub_socket, "display_data", output)
 
     def _run_create_external_table_as_select_query(self, query: str, silent: bool):
+        from dunky.store import (
+            store,
+        )  # import here to enable pyarrow and unitycatalog extra
+        from dunky.threading import run_with_timeout
+        from dunky.config import DunkyTargetConfig
+
         target_config = DunkyTargetConfig.from_query(query)
         select_query_match = re.search(r"AS\s+(.*)", query, re.IGNORECASE | re.DOTALL)
         if not select_query_match:
@@ -190,26 +192,29 @@ class DunkyKernel(Kernel):
         df = self._conn.sql(select_query).arrow()
 
         run_with_timeout(
-            func=DunkyPlugin("junity", plugin_config={}).store,
+            func=store,
             args=(target_config, df),
             timeout=10,
         )
+        catalog_name = target_config.table_config.catalog_name
+        schema_name = target_config.table_config.schema_name
+        table_name = target_config.table_config.table_name
 
-        relation = target_config.relation
-
-        full_path = f"{relation.database}.{relation.schema}.{relation.identifier}"
+        full_path = (
+            f"{catalog_name}.{schema_name}.{table_name}"
+        )
         # check if the table was created
         # first we need to detach and reattach the database
-        self._conn.sql(f"DETACH DATABASE {relation.database};")
+        self._conn.sql(f"DETACH DATABASE {catalog_name};")
         self._conn.sql(
-            f"ATTACH '{relation.database}' AS {relation.database} (TYPE UC_CATALOG);"
+            f"ATTACH '{catalog_name}' AS {catalog_name} (TYPE UC_CATALOG);"
         )
         # then we can check if the table exists
         try:
             self._conn.sql(f"SELECT * FROM {full_path} LIMIT 1;")
         except Exception:
             raise ValueError(
-                f"External table '{relation.database}.{relation.schema}.{relation.identifier}' not created successfully"
+                f"External table '{catalog_name}.{schema_name}.{table_name}' not created successfully"
             )
 
         output = {
