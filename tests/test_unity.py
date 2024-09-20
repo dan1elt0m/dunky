@@ -33,6 +33,7 @@ def test_uc_get_storage_credentials_returns_credentials(mocker):
     mock_client = mocker.Mock(spec=Unitycatalog)
     mock_client.tables = mocker.Mock()
     mock_client.tables.list.return_value = TableListResponse(tables=[TableInfo(table_id="table_id")])
+    mocker.patch("dunky.unity.uc_table_exists", return_value=True)
     mock_creds = mocker.Mock(
         aws_temp_credentials=mocker.Mock(
             access_key_id="access_key_id",
@@ -42,8 +43,13 @@ def test_uc_get_storage_credentials_returns_credentials(mocker):
     )
     mock_client.temporary_table_credentials = mocker.Mock()
     mock_client.temporary_table_credentials.create.return_value = mock_creds
-    uc_get_storage_credentials(mock_client, "catalog_name", "schema_name", "table_name")
-    mock_client.temporary_table_credentials.create.called_once()
+    creds = uc_get_storage_credentials(mock_client, "catalog_name", "schema_name", "table_name")
+    mock_client.temporary_table_credentials.create.assert_called_once()
+    assert creds == {'AWS_ACCESS_KEY_ID': 'access_key_id',
+'AWS_SECRET_ACCESS_KEY': 'secret_access_key',
+                     'AWS_SESSION_TOKEN': 'session_token'}
+
+
 
 
 def test_uc_get_storage_credentials_returns_empty(mocker):
