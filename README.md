@@ -44,18 +44,18 @@ You can directly query DuckDB tables and use Unity Catalog features in your note
 You don't need to set up a connection or manage credentials, as Dunky handles all of that for you.
 
 Start with attaching your database using the ATTACH DATABASE command. e.g., 
+```bash
+ATTACH DATABASE 'unity' AS unity (TYPE UC_CATALOG);
+```
+
+After attaching, just start writing your queries and enjoy the power of DuckDB with Unity Catalog integration!
+
 
 ### S3 Integration
 Dunky supports AWS S3 integration with Unity Catalog.
 - prerequisite: 
   - Make sure the unity catalog has S3 bucket authentication configured 
 - Writing to S3: in the CREATE EXTERNAL TABLE set location to `s3://your-bucket-name`
-
-```bash
-ATTACH DATABASE 'unity' AS unity (TYPE UC_CATALOG);
-```
-After attaching, just start writing your queries and enjoy the power of DuckDB with Unity Catalog integration!
-
 
 ps. Dunky might also work with gcp and azure, but have not tested this. depends on whether unity and duckdb uc_catalog
 support it. I've seen some people confirming that unity catalog and duckdb can work with Azure and gcp. 
@@ -75,7 +75,7 @@ If not already selected, you can find Dunky kernel in the kernel list.
 
 ### Remarks
 - This kernel is still in development and may have some bugs.
-- This extension works well together with the junity extension.
+- This extension works well together with the [junity](https://github.com/dan1elt0m/junity) extension.
 
 
 ### Issues?
