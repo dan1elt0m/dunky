@@ -1,3 +1,5 @@
+[![Github Actions Status](https://github.com/dan1elt0m/dunky/workflows/test/badge.svg)](https://github.com/dan1elt0m/dunky/actions/workflows/test.yml)
+
 # Dunky
 
 A Jupyter Kernel for DuckDB with Unity Catalog.
