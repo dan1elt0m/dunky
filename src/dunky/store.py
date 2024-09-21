@@ -34,10 +34,6 @@ def store(target_config: DunkyTargetConfig, df: pa.lib.Table = None):
     unique_key = storage_options.get("unique_key", None)
     # extend the storage options with the aws region
     storage_options["AWS_REGION"] = os.environ.get("AWS_REGION", "eu-west-1")
-    # extend the storage options with the temporary table credentials
-    storage_options = storage_options | uc_get_storage_credentials(
-        uc_client, table_config.catalog_name, table_config.schema_name, table_name
-    )
 
     # Convert the pa schema to columns
     converted_schema = model_unity_schema(schema=df.schema)
@@ -51,6 +47,11 @@ def store(target_config: DunkyTargetConfig, df: pa.lib.Table = None):
         storage_location=table_path,
         schema=converted_schema,
         storage_format="DELTA",
+    )
+
+    # extend the storage options with the temporary table credentials
+    storage_options = storage_options | uc_get_storage_credentials(
+        uc_client, table_config.catalog_name, table_config.schema_name, table_name
     )
 
     try:
