@@ -15,7 +15,9 @@ def store(target_config: DunkyTargetConfig, df: pa.lib.Table = None):
     """Store the given pyarrow table as delta table and create the table in the Unitycatalog."""
     base_url = f"{os.environ.get('UC_ENDPOINT', 'http://localhost:808')}/api/2.1/unity-catalog"
     uc_client = Unitycatalog(
-        base_url=base_url
+        base_url=base_url,
+        default_headers={"Authorization": f"Bearer {os.environ.get('UC_TOKEN')}"},
+
     )
     assert (
         target_config.location is not None
