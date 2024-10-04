@@ -8,6 +8,7 @@ A Jupyter Kernel for DuckDB with Unity Catalog.
 
 ### Description
 
+
 Dunky is a Jupyter kernel that allows you to run DuckDB queries with Unity Catalog integration directly from your Jupyter notebooks.
 
 I created this extension because existing solutions such as `jupysql` require you to use magics, load uc_catalog, delta, and manage secrets
