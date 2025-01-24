@@ -145,20 +145,20 @@ def test_env_query_executes_correctly(kernel, monkeypatch):
 
 
 def test_env_query_multiple_executes_correctly(kernel, monkeypatch):
-    query = ("""ENV MYVAR1=MYVALUE1
-                    MYVAR2=MYVALUE2
-                    MYVAR3=MYVALUE3
+    query = ("""ENV UC_ENDPOINT=http://localhost:8080/api/2.1/unity-catalog
+                    UC_REGION=eu-west-1
+                    UC_TOKEN=my-token
                 ;""")
 
     # Use monkeypatch to set the environment variable
-    monkeypatch.setenv("MYVAR1", "")
-    monkeypatch.setenv("MYVAR2", "")
-    monkeypatch.setenv("MYVAR3", "")
+    monkeypatch.setenv("UC_ENDPOINT", "")
+    monkeypatch.setenv("UC_REGION", "")
+    monkeypatch.setenv("UC_TOKEN", "")
 
     kernel._run_env_query(query, silent=False)
 
     # Check if the environment variable is set correctly
-    assert os.environ["MYVAR1"] == "MYVALUE1"
-    assert os.environ["MYVAR2"] == "MYVALUE2"
-    assert os.environ["MYVAR3"] == "MYVALUE3"
+    assert os.environ["UC_ENDPOINT"] == "http://localhost:8080/api/2.1/unity-catalog"
+    assert os.environ["UC_REGION"] == "eu-west-1"
+    assert os.environ["UC_TOKEN"] == "my-token"
 

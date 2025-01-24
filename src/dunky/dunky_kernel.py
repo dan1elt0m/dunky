@@ -255,7 +255,7 @@ class DunkyKernel(Kernel):
             self.send_response(self.iopub_socket, "display_data", output)
 
     def _run_env_query(self, query: str, silent: bool):
-        env_assignments = re.findall(r"(\w+)=(\w+)", query)
+        env_assignments = re.findall(r"(\w+)=([^\s]+)", query)
         if env_assignments:
             for var_name, var_value in env_assignments:
                 os.environ[var_name] = var_value
