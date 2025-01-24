@@ -51,6 +51,7 @@ For these changes to take effect, you will need to reload the secret.
 ```sql
 RELOAD SECRET;
 ```
+If database is already attached, you can detach and reattach it to apply the changes. e.g., 
 
 ### Usage
 After installing, you can start using the Dunky kernel in your Jupyter notebooks. 
