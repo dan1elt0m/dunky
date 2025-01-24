@@ -32,12 +32,25 @@ pip install dunky
 
 ### Configure Unity Catalog
 You can set the following environment variables to configure Unity Catalog:
+> Make sure to set these env variables are available before the kernel is started. 
 
 - `UC_ENDPOINT`: The endpoint of the Unity Catalog server.
 - `UC_TOKEN`: The token to authenticate with the Unity Catalog server. 
 - `UC_AWS_REGION`: The AWS region to use for the Unity Catalog server.
 
-These settings default to localhost:8080/api/2.1/unity-catalog, not-used, and eu-west-1 respectively.
+These settings default to `localhost:8080/api/2.1/unity-catalog`, `not-used`, and `eu-west-1` respectively.
+
+If you want to update these settings after the kernel has started, you can use the `ENV` command. e.g., 
+```sql
+ENV UC_ENDPOINT=http://localhost:8080/api/2.1/unity-catalog
+    UC_TOKEN=your-token
+    UC_AWS_REGION=eu-west-1
+```
+For these changes to take effect, you will need to reload the secret.
+
+```sql
+RELOAD SECRET;
+```
 
 ### Usage
 After installing, you can start using the Dunky kernel in your Jupyter notebooks. 

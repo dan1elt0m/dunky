@@ -1,3 +1,4 @@
+import os
 import pandas
 import pytest
 from unittest.mock import patch, MagicMock
@@ -7,7 +8,7 @@ from dunky.dunky_kernel import (
     is_show_query,
     is_attach_query,
     is_detach_query,
-    is_create_external_table_as_select_query,
+    is_create_external_table_as_select_query, is_reload_secret_query, is_env_query,
 )
 
 
@@ -120,3 +121,44 @@ def test_create_external_table_location_as_select_query_identified_correctly():
 def test_create_external_table_location_option_as_select_query_identified_correctly():
     query = "CREATE EXTERNAL TABLE test_table LOCATION 's3://example' OPTIONS (format=delta) AS SELECT * FROM source_table"
     assert is_create_external_table_as_select_query(query)
+
+def test_reload_secret_identified_correctly():
+    query = "RELOAD SECRET;"
+    assert is_reload_secret_query(query)
+
+
+def test_is_env_query_identified_correctly():
+    query = "ENV MYVAR=MYVALUE"
+    assert is_env_query(query)
+
+
+def test_env_query_executes_correctly(kernel, monkeypatch):
+    query = "ENV MYVAR=MYVALUE"
+
+    # Use monkeypatch to set the environment variable
+    monkeypatch.setenv("MYVAR", "")
+
+    kernel._run_env_query(query, silent=False)
+
+    # Check if the environment variable is set correctly
+    assert os.environ["MYVAR"] == "MYVALUE"
+
+
+def test_env_query_multiple_executes_correctly(kernel, monkeypatch):
+    query = ("""ENV MYVAR1=MYVALUE1
+                    MYVAR2=MYVALUE2
+                    MYVAR3=MYVALUE3
+                ;""")
+
+    # Use monkeypatch to set the environment variable
+    monkeypatch.setenv("MYVAR1", "")
+    monkeypatch.setenv("MYVAR2", "")
+    monkeypatch.setenv("MYVAR3", "")
+
+    kernel._run_env_query(query, silent=False)
+
+    # Check if the environment variable is set correctly
+    assert os.environ["MYVAR1"] == "MYVALUE1"
+    assert os.environ["MYVAR2"] == "MYVALUE2"
+    assert os.environ["MYVAR3"] == "MYVALUE3"
+

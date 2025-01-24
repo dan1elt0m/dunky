@@ -29,6 +29,9 @@ def is_show_query(query: str):
     show_query_pattern = re.compile(r"^\s*SHOW\s+", re.IGNORECASE)
     return show_query_pattern.match(query)
 
+def is_env_query(query: str):
+    env_query_pattern = re.compile(r"^\s*ENV\s+\w+=\w+", re.IGNORECASE)
+    return env_query_pattern.match(query)
 
 def is_attach_query(query: str):
     attach_query_pattern = re.compile(r"^\s*ATTACH\s+", re.IGNORECASE)
@@ -45,6 +48,9 @@ def is_create_external_table_as_select_query(query: str) -> bool:
         r"^\s*CREATE\s+EXTERNAL\s+TABLE\s+.*\s+AS\s+SELECT\s+", re.IGNORECASE
     )
     return bool(pattern.search(query))
+
+def is_reload_secret_query(query: str) -> bool:
+    return query.startswith("RELOAD SECRET")
 
 
 class DunkyKernel(Kernel):
@@ -68,6 +74,17 @@ class DunkyKernel(Kernel):
         self._conn = duckdb.connect(":memory:")  # nothing is persisted to disk
         self._bootstrap()  # install uc_catalog, delta, load delta, load uc_catalog, create secret
 
+    def _reload_secret(self):
+        self._conn.sql("DROP TEMPORARY SECRET __default_uc;")
+        self._conn.sql(f"""
+        CREATE SECRET (
+            TYPE UC,
+            TOKEN '{os.environ.get('UC_TOKEN', 'not-used')}',
+            ENDPOINT '{os.environ.get('UC_ENDPOINT', "http://localhost:8080")}',
+            AWS_REGION '{os.environ.get('UC_AWS_REGION', "eu-west-1")}'
+        );
+        """)
+
     def _bootstrap(self):
         self._conn.sql(f"""
         INSTALL uc_catalog from core_nightly;
@@ -82,11 +99,6 @@ class DunkyKernel(Kernel):
         );
         """)
 
-    def is_create_external_table_as_select_query(query: str) -> bool:
-        pattern = re.compile(
-            r"^\s*CREATE\s+EXTERNAL\s+TABLE\s+.*\s+AS\s+SELECT\s+", re.IGNORECASE
-        )
-        return bool(pattern.search(query))
 
     def _run_select_query(self, query: str, silent: bool):
         """Create a pandas dataframe from the result of a select query
@@ -242,6 +254,41 @@ class DunkyKernel(Kernel):
         if not silent:
             self.send_response(self.iopub_socket, "display_data", output)
 
+    def _run_env_query(self, query: str, silent: bool):
+        env_assignments = re.findall(r"(\w+)=(\w+)", query)
+        if env_assignments:
+            for var_name, var_value in env_assignments:
+                os.environ[var_name] = var_value
+            output = "Environment variables set: " + ", ".join(
+                [f"{var_name}={var_value}" for var_name, var_value in env_assignments])
+        else:
+            output = "Invalid ENV query format."
+
+        if not silent:
+            self.send_response(
+                self.iopub_socket,
+                "display_data",
+                {"data": {"text/plain": output}, "metadata": {}},
+            )
+
+    def _handle_query(self, code, silent):
+        if is_select_query(code):
+            self._run_select_query(code, silent)
+        elif is_show_query(code):
+            self._run_show_query(code, silent)
+        elif is_attach_query(code):
+            self._run_attach_query(code, silent)
+        elif is_detach_query(code):
+            self._run_detach_query(code, silent)
+        elif is_create_external_table_as_select_query(code):
+            self._run_create_external_table_as_select_query(code, silent)
+        elif is_reload_secret_query(code):
+            self._reload_secret()
+        elif is_env_query(code):
+            self._run_env_query(code, silent)
+        else:
+            self._run_unknown_query_type(code, silent)
+
     def do_execute(
         self,
         code,
@@ -254,18 +301,8 @@ class DunkyKernel(Kernel):
         try:
             if code.startswith("!"):
                 self._run_shell_command(code[1:], silent)
-            elif is_select_query(code):
-                self._run_select_query(code, silent)
-            elif is_show_query(code):
-                self._run_show_query(code, silent)
-            elif is_attach_query(code):
-                self._run_attach_query(code, silent)
-            elif is_detach_query(code):
-                self._run_detach_query(code, silent)
-            elif is_create_external_table_as_select_query(code):
-                self._run_create_external_table_as_select_query(code, silent)
             else:
-                self._run_unknown_query_type(code, silent)
+                self._handle_query(code, silent)
         except Exception as e:
             output = str(e)
             self.send_response(
