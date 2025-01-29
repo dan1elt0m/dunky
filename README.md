@@ -72,7 +72,10 @@ After attaching, just start writing your queries and enjoy the power of DuckDB w
 Dunky supports AWS S3 integration with Unity Catalog.
 - prerequisite: 
   - Make sure the unity catalog has S3 bucket authentication configured 
-- Writing to S3: in the CREATE EXTERNAL TABLE set location to `s3://your-bucket-name`
+- Writing to S3: in the CREATE EXTERNAL TABLE set location to your s3:// location 
+> writing to s3 runs via delta-rs. you can provide additional storage options for delta-rs with the OPTIONS clause.
+> e.g., OPTIONS (storage_account='your-storage-account', storage_key='your-storage-key', storage_container='your-storage-container')
+> If writing to S3, storage credentials are obtained from the Unity Catalog server using the provided token. 
 
 ps. Dunky might also work with gcp and azure, but have not tested this. depends on whether unity and duckdb uc_catalog
 support it. I've seen some people confirming that unity catalog and duckdb can work with Azure and gcp. 
