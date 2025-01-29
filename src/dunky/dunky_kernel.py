@@ -5,6 +5,7 @@ import os
 import re
 from tabulate import tabulate
 
+from dunky.unity import fetch_s3_create_table_credentials
 
 
 def display_data(header: str, rows: list):
@@ -199,6 +200,11 @@ class DunkyKernel(Kernel):
         select_query_match = re.search(r"AS\s+(.*)", query, re.IGNORECASE | re.DOTALL)
         if not select_query_match:
             raise ValueError("Invalid CREATE EXTERNAL TABLE AS SELECT query")
+
+        # Fetch credentials if the location is on S3
+        if target_config.location.startswith("s3://"):
+            aws_storage_options = fetch_s3_create_table_credentials(target_config)
+            target_config.storage_options.update(aws_storage_options)
 
         select_query = select_query_match.group(1).strip()
         df = self._conn.sql(select_query).arrow()

@@ -1,3 +1,5 @@
+import os
+import requests
 from pyarrow_unity.model import UCSupportedFormatLiteral
 from unitycatalog import Unitycatalog
 from unitycatalog.types import GenerateTemporaryTableCredentialResponse
@@ -64,6 +66,33 @@ def uc_get_storage_credentials(
 
     return {}
 
+
+def fetch_s3_create_table_credentials(endpoint: str, path: str, operation: str) -> dict:
+    token = os.environ.get("UC_TOKEN")
+    if not token:
+        raise ValueError("UC_TOKEN environment variable is required for storing data on S3")
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}'
+    }
+
+    url = f"{endpoint}/temporary-path-credentials"
+    payload = {
+        "url": path,
+        "operation": operation
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    response.raise_for_status()
+    credentials = response.json()['aws_temp_credentials']
+
+    return {
+        "AWS_REGION": os.environ.get("UC_AWS_REGION", "eu-west-1"),
+        "AWS_ACCESS_KEY_ID": credentials["access_key_id"],
+        "AWS_SECRET_ACCESS_KEY": credentials["secret_access_key"],
+        "AWS_SESSION_TOKEN": credentials["session_token"],
+    }
 
 def create_table_if_not_exists(
     uc_client: Unitycatalog,

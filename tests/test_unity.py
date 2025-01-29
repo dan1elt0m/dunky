@@ -1,3 +1,5 @@
+import os
+import requests_mock
 from unitycatalog import Unitycatalog
 from unitycatalog.types import (
     TableListResponse,
@@ -11,6 +13,7 @@ from dunky.unity import (
     uc_schema_exists,
     uc_get_storage_credentials,
     create_table_if_not_exists,
+fetch_s3_create_table_credentials
 )
 
 
@@ -141,3 +144,30 @@ def test_create_table_if_not_exists_does_nothing(mocker):
     )
     mock_client.schemas.create.assert_not_called()
     mock_client.tables.create.assert_not_called()
+
+
+def test_fetch_s3_create_table_credentials():
+    endpoint = "http://localhost:8080/api/2.1/unity-catalog"
+    path = "s3://bucket/path"
+    operation = "PATH_CREATE_TABLE"
+    token = "test_token"
+    os.environ["UC_TOKEN"] = token
+
+    credentials_response = {
+        "aws_temp_credentials": {
+            "access_key_id": "test_access_key_id",
+            "secret_access_key": "test_secret_access_key",
+            "session_token": "test_session_token"
+        }
+    }
+
+    with requests_mock.Mocker() as m:
+        m.post(f"{endpoint}/temporary-path-credentials", json=credentials_response)
+        credentials = fetch_s3_create_table_credentials(endpoint, path, operation)
+
+    assert credentials == {
+        "AWS_REGION": "eu-west-1",
+        "AWS_ACCESS_KEY_ID": "test_access_key_id",
+        "AWS_SECRET_ACCESS_KEY": "test_secret_access_key",
+        "AWS_SESSION_TOKEN": "test_session_token",
+    }
