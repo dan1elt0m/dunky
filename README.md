@@ -30,6 +30,17 @@ To install Dunky, you can use the following commands:
 pip install dunky
 ```
 
+
+### Usage
+Select the "Dunky" kernel from the kernel selection menu in JupyterLab or Jupyter Notebook.
+
+
+Only required step is to attach a catalog from the Unity Catalog using the ATTACH DATABASE command.
+```bash
+ATTACH DATABASE 'unity' AS unity (TYPE UC_CATALOG);
+```
+You don't need to set up a connection or manage credentials, as Dunky handles all of that for you.
+
 ### Configure Unity Catalog
 You can set the following environment variables to configure Unity Catalog:
 > Make sure to set these env variables are available before the kernel is started. 
@@ -52,20 +63,6 @@ For these changes to take effect, you will need to reload the secret.
 RELOAD SECRET;
 ```
 If database is already attached, you can detach and reattach it to apply the changes. e.g., 
-
-### Usage
-After installing, you can start using the Dunky kernel in your Jupyter notebooks. 
-Select the "Dunky" kernel from the kernel selection menu.
-
-You can directly query DuckDB tables and use Unity Catalog features in your notebooks. 
-You don't need to set up a connection or manage credentials, as Dunky handles all of that for you.
-
-Start with attaching your database using the ATTACH DATABASE command. e.g., 
-```bash
-ATTACH DATABASE 'unity' AS unity (TYPE UC_CATALOG);
-```
-
-After attaching, just start writing your queries and enjoy the power of DuckDB with Unity Catalog integration!
 
 
 ### S3 Integration
