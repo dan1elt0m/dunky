@@ -2,9 +2,10 @@
 .idea/
 .python-version
 __pycache__/
-dist/
+docker/dist/
 .envrc
 junit/
 .coverage
 data_kernelspec/
 .DS_Store
+.ipynb_checkpoints/

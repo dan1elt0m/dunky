@@ -3,22 +3,9 @@ import duckdb
 from ipykernel.kernelbase import Kernel
 import os
 import re
-from tabulate import tabulate
 
 from dunky.unity import fetch_s3_create_table_credentials
-
-
-def display_data(header: str, rows: list):
-    """Generate the display data for the Jupyter frontend"""
-    d = {
-        "data": {
-            "text/latex": tabulate(rows, header, tablefmt="latex_booktabs"),
-            "text/plain": tabulate(rows, header, tablefmt="simple"),
-            "text/html": tabulate(rows, header, tablefmt="html"),
-        },
-        "metadata": {},
-    }
-    return d
+from dunky.display import display_data
 
 
 def is_select_query(query: str):

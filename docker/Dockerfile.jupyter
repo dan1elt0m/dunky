@@ -5,6 +5,10 @@ FROM quay.io/jupyter/minimal-notebook:x86_64-python-3.11
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# For local development, you can use the following command to build the image:
+#COPY dist/*.whl ${HOME}/
+#RUN pip install --no-cache-dir --force-reinstall ${HOME}/dunky-*.whl
+
 COPY example.ipynb ${HOME}/example.ipynb
 
 WORKDIR ${HOME}

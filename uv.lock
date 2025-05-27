@@ -329,11 +329,12 @@ wheels = [
 
 [[package]]
 name = "dunky"
-version = "0.2.4"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
     { name = "ipykernel" },
+    { name = "itables" },
     { name = "pandas" },
     { name = "requests" },
     { name = "tabulate" },
@@ -359,8 +360,9 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "deltalake", marker = "extra == 'delta'", specifier = ">=0.18.2" },
-    { name = "duckdb", specifier = ">=1,<2" },
+    { name = "duckdb", specifier = ">=1,<1.3" },
     { name = "ipykernel", specifier = ">=6,<7" },
+    { name = "itables", specifier = ">=2.4.0" },
     { name = "pandas", specifier = ">=2,<3" },
     { name = "pyarrow-unity", marker = "extra == 'delta'", specifier = ">=0.1.0" },
     { name = "requests", specifier = ">=2,<3" },
@@ -504,6 +506,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/57/24/d4fabaca03c8804bf0b8d994c8ae3a20e57e9330d277fb43d83e558dec5e/ipython-8.27.0.tar.gz", hash = "sha256:0b99a2dc9f15fd68692e898e5568725c6d49c527d36a9fb5960ffbdeaa82ff7e", size = 5494984 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a8/a2/6c725958e6f135d8e5de081e69841bb2c1d84b3fc259d02eb092b8fc203a/ipython-8.27.0-py3-none-any.whl", hash = "sha256:f68b3cb8bde357a5d7adc9598d57e22a45dfbea19eb6b98286fa3b288c9cd55c", size = 818986 },
+]
+
+[[package]]
+name = "itables"
+version = "2.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ipython" },
+    { name = "numpy" },
+    { name = "pandas" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c2/55/9710b529fe144def4df08b39acce0c43de4383adc9c5a713e3d8e3a795e0/itables-2.4.0.tar.gz", hash = "sha256:4b91c049455fa939f2f95bb5e4c6124ab11f7c2689b8bed484339cddeb9d5562", size = 2285608 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/fb/333d7d928e9bc1724b417db12a943c48b508507e88cb15c70ed43c8e43bd/itables-2.4.0-py3-none-any.whl", hash = "sha256:ca6563eaa0a689e5bc61209543e2ffdf2db36b892b505e68646fb4d39302a132", size = 2316516 },
 ]
 
 [[package]]
